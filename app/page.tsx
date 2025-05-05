@@ -1,21 +1,12 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import HomeHeader from "./Header";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="w-full py-4 px-6 border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-xl">DriveClone</span>
-          </div>
-
-          <Button asChild>
-            <Link href="/signin">Sign In</Link>
-          </Button>
-        </div>
-      </header>
+      <HomeHeader />
 
       <main className="flex-1">
         <section className="py-20 px-6">
