@@ -62,7 +62,7 @@ export default function SignIn() {
   });
 
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-50">
+    <div className="flex items-center justify-center">
       <Card className="w-[400px] shadow-lg">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">DriveClone</div>
