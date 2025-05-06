@@ -1,21 +1,24 @@
 import authOptions from "@/auth/authOptions";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 import prisma from "@/lib/prisma";
-import { patchFolderSchema } from "@/lib/validators";
+import { fileFilterSchema, patchFolderSchema } from "@/lib/validators";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const currentUser = session.user;
 
     const folder = await prisma.folder.findUnique({
       where: {
-        id: params.id,
+        id,
+        userId: currentUser.id,
       },
       include: {
         children: true,
@@ -27,10 +30,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Folder not found" }, { status: 404 });
     }
 
-    if (folder.userId !== session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
-
     return NextResponse.json(folder);
   } catch (error) {
     console.error("Error fetching folder:", error);
@@ -38,13 +37,16 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUser = session.user;
 
     const body = await request.json();
     const { name, parentId, isStarred } = body;
@@ -57,8 +59,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     const folder = await prisma.folder.findUnique({
       where: {
-        id: params.id,
-        userId: session.user.id,
+        id,
+        userId: currentUser.id,
       },
     });
 
@@ -76,7 +78,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       const parentFolder = await prisma.folder.findUnique({
         where: {
           id: parentId,
-          userId: session.user.id,
+          userId: currentUser.id,
         },
       });
 
@@ -85,14 +87,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       }
 
       // Prevent circular reference (folder can't be its own parent)
-      if (parentId === params.id) {
+      if (parentId === id) {
         return NextResponse.json({ error: "Folder cannot be its own parent" }, { status: 400 });
       }
     }
 
     const updatedFolder = await prisma.folder.update({
       where: {
-        id: params.id,
+        id,
       },
       data: { name, isStarred, parentId },
     });
@@ -104,18 +106,20 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const currentUser = session.user;
     const folder = await prisma.folder.findUnique({
       where: {
-        id: params.id,
-        userId: session.user.id,
+        id,
+        userId: currentUser.id,
       },
       include: {
         files: true,
@@ -137,8 +141,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
     if (permanent) {
       // For permanent deletion, first get all files in this folder and subfolders
-      const allFolderIds = await getSubFolderIds(params.id);
-      allFolderIds.push(params.id); // Include the current folder
+      const allFolderIds = await getSubFolderIds(id);
+      allFolderIds.push(id); // Include the current folder
 
       // Get all files in these folders
       const files = await prisma.file.findMany({
@@ -164,7 +168,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       // Delete the folder and all its contents (Prisma cascade will handle this)
       await prisma.folder.delete({
         where: {
-          id: params.id,
+          id,
         },
       });
 
@@ -172,7 +176,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       if (totalSize > 0) {
         await prisma.user.update({
           where: {
-            id: session.user.id,
+            id: currentUser.id,
           },
           data: {
             usedStorage: {
@@ -190,7 +194,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       // Move to trash
       await prisma.folder.update({
         where: {
-          id: params.id,
+          id,
         },
         data: {
           isTrash: true,
@@ -208,20 +212,29 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await req.json();
+    const currentUser = session.user;
+    const body = await request.json();
+
+    const { success, error } = fileFilterSchema.safeParse(body);
+
+    if (!success) {
+      return NextResponse.json(error.format(), { status: 400 });
+    }
 
     // Get the folder
     const folder = await prisma.folder.findUnique({
       where: {
-        id: params.id,
+        id,
+        userId: currentUser.id,
       },
     });
 
@@ -229,16 +242,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       return NextResponse.json({ error: "Folder not found" }, { status: 404 });
     }
 
-    if (folder.userId !== session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
-
     // Handle specific operations
     const { operation } = body;
 
     if (operation === "star") {
       const updatedFolder = await prisma.folder.update({
-        where: { id: params.id },
+        where: { id },
         data: { isStarred: true },
       });
       return NextResponse.json(updatedFolder);
@@ -246,7 +255,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     if (operation === "unstar") {
       const updatedFolder = await prisma.folder.update({
-        where: { id: params.id },
+        where: { id },
         data: { isStarred: false },
       });
       return NextResponse.json(updatedFolder);
@@ -254,14 +263,13 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     if (operation === "restore") {
       const updatedFolder = await prisma.folder.update({
-        where: { id: params.id },
+        where: { id },
         data: { isTrash: false },
       });
       return NextResponse.json(updatedFolder);
     }
 
-    // If operation is not recognized
-    return NextResponse.json({ error: "Invalid operation" }, { status: 400 });
+    return NextResponse.json({});
   } catch (error) {
     console.error("Error updating folder:", error);
     return NextResponse.json({ error: "Failed to update folder" }, { status: 500 });
