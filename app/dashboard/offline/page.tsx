@@ -22,8 +22,8 @@ export default async function OfflinePage() {
             <div>
               <h2 className="text-xl font-semibold mb-4">Offline Access Settings</h2>
               <p className="text-gray-600 mb-4">
-                Make selected files available offline across your devices. Files are automatically synced when you're
-                back online.
+                Make selected files available offline across your devices. Files are automatically synced when
+                you&apos;re back online.
               </p>
 
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
@@ -42,7 +42,7 @@ export default async function OfflinePage() {
               <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 h-full flex flex-col items-center justify-center text-center">
                 <CloudOff className="h-12 w-12 text-gray-400 mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No Offline Files</h3>
-                <p className="text-sm text-gray-500">You don't have any files available for offline access.</p>
+                <p className="text-sm text-gray-500">You don&apos;t have any files available for offline access.</p>
                 <p className="text-xs text-gray-500 mt-6">Storage Usage: 0 MB</p>
               </div>
             </div>
@@ -64,7 +64,7 @@ export default async function OfflinePage() {
               <div className="bg-gray-50 p-4 rounded-lg border">
                 <h4 className="font-medium mb-2">3. Access Anywhere</h4>
                 <p className="text-sm text-gray-600">
-                  Open and edit files even when you're offline. Changes sync when you reconnect.
+                  Open and edit files even when you&apos;re offline. Changes sync when you reconnect.
                 </p>
               </div>
             </div>

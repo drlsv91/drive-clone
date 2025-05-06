@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Bell, Mail, MessagesSquare, Share, Lock, Activity } from "lucide-react";
 import { toast } from "sonner";
+import { showError } from "@/lib/utils";
 
 interface NotificationSettingsProps {
   userId: string;
@@ -23,6 +24,7 @@ export default function NotificationSettings({ userId }: Readonly<NotificationSe
     newFeatures: false,
     weeklyDigest: true,
   });
+  console.log(userId);
 
   const [pushNotifications, setPushNotifications] = useState({
     fileShared: true,
@@ -62,10 +64,8 @@ export default function NotificationSettings({ userId }: Readonly<NotificationSe
       toast.success("Settings updated", {
         description: `${setting.replace(/([A-Z])/g, " $1").toLowerCase()} ${type} notifications updated.`,
       });
-    } catch (error) {
-      toast.error("Update failed", {
-        description: "Failed to update notification settings.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Update failed");
     } finally {
       setIsUpdating(false);
     }
@@ -82,10 +82,8 @@ export default function NotificationSettings({ userId }: Readonly<NotificationSe
       });
 
       router.refresh();
-    } catch (error) {
-      toast.error("Save failed", {
-        description: "Failed to save notification settings.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Save failed");
     } finally {
       setIsUpdating(false);
     }

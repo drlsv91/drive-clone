@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import authOptions from "@/auth/authOptions";
 import prisma from "@/lib/prisma";
+import { Folder } from "@/generated/prisma";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -14,12 +15,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     const currentUser = session.user;
 
-    const breadcrumbs = [];
+    const breadcrumbs: Folder[] = [];
     let currentFolderId = id;
 
     // Build breadcrumbs by walking up the folder tree
     while (currentFolderId) {
-      const folder = await prisma.folder.findUnique({
+      const folder = (await prisma.folder.findUnique({
         where: {
           id: currentFolderId,
           userId: currentUser.id,
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           userId: true,
           isRoot: true,
         },
-      });
+      })) as Folder;
 
       if (!folder) {
         break;

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AlertTriangle, KeyRound, LogOut, Shield, UserX } from "lucide-react";
 import { toast } from "sonner";
+import { showError } from "@/lib/utils";
 
 interface SecuritySettingsProps {
   userId: string;
@@ -36,6 +37,7 @@ export default function SecuritySettings({ userId }: Readonly<SecuritySettingsPr
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  console.log(userId);
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,10 +67,8 @@ export default function SecuritySettings({ userId }: Readonly<SecuritySettingsPr
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (error) {
-      toast.error("Failed to change password", {
-        description: "An error occurred. Please try again.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Failed to change password");
     } finally {
       setIsChangingPassword(false);
     }
@@ -86,10 +86,8 @@ export default function SecuritySettings({ userId }: Readonly<SecuritySettingsPr
           ? "Two-factor authentication has been enabled."
           : "Two-factor authentication has been disabled.",
       });
-    } catch (error) {
-      toast.error("Operation failed", {
-        description: "Failed to update 2FA settings. Please try again.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Operation failed");
     }
   };
 
@@ -102,10 +100,8 @@ export default function SecuritySettings({ userId }: Readonly<SecuritySettingsPr
           ? "Your account activity will be tracked for security purposes."
           : "Account activity tracking has been disabled.",
       });
-    } catch (error) {
-      toast.error("Operation failed", {
-        description: "Failed to update tracking settings. Please try again.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Operation failed");
     }
   };
 
@@ -124,10 +120,8 @@ export default function SecuritySettings({ userId }: Readonly<SecuritySettingsPr
 
       // Redirect to home page
       await signOut({ callbackUrl: "/" });
-    } catch (error) {
-      toast.error("Deletion failed", {
-        description: "Failed to delete your account. Please try again.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Deletion failed");
       setShowDeleteDialog(false);
     }
   };
@@ -296,7 +290,7 @@ export default function SecuritySettings({ userId }: Readonly<SecuritySettingsPr
               Sign Out from All Devices?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This will sign you out from all devices except the current one. You'll need to sign in again on those
+              This will sign you out from all devices except the current one. You&apos;ll need to sign in again on those
               devices.
             </AlertDialogDescription>
           </AlertDialogHeader>

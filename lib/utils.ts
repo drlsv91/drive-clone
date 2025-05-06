@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -93,4 +94,24 @@ export function sanitizeFilename(filename: string): string {
     .replace(/\.\./g, "_") // Prevent directory traversal
     .replace(/\s+/g, "_") // Replace spaces with underscores
     .trim();
+}
+
+interface ApiError {
+  message?: string;
+  response?: {
+    data?: {
+      error?: string;
+    };
+  };
+}
+
+export function showError(error: unknown, title: string = "Error") {
+  if (error instanceof Error) {
+    toast.error(title, { description: error.message ?? "An unexpected error occurred. Please try again." });
+  } else if (typeof error === "object" && error && "response" in error) {
+    const errorMessage = error as ApiError;
+    toast.error(title, { description: errorMessage.response?.data?.error });
+  } else {
+    toast.error(title, { description: "An unexpected error occurred. Please try again." });
+  }
 }

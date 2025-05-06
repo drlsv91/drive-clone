@@ -6,7 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, showError } from "@/lib/utils";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -77,11 +77,9 @@ export default function FileUpload({ folderId, onUploadComplete }: Readonly<File
         }
         router.refresh();
       }, 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setUploading(false);
-      toast.error("Upload failed", {
-        description: error.message ?? "Something went wrong.",
-      });
+      showError(error);
     }
   };
 

@@ -22,7 +22,7 @@ export default function UploadPage() {
 
   useEffect(() => {
     fetchFolders();
-  }, []);
+  }, [fetchFolders]);
 
   const handleUploadComplete = () => {
     setUploading(false);

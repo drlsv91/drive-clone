@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import BreadcrumbNav from "../components/BreadcrumbNav";
+import { showError } from "@/lib/utils";
 
 const TrashHeader = () => {
   const router = useRouter();
@@ -20,10 +21,8 @@ const TrashHeader = () => {
         description: "All items in trash have been permanently deleted.",
       });
       router.refresh();
-    } catch (error: any) {
-      toast.error("Operation failed", {
-        description: error.response?.data?.error ?? "Failed to empty trash. Please try again.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Operation failed");
     } finally {
       setIsLoading(false);
     }

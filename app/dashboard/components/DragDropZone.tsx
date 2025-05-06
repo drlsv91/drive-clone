@@ -6,7 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { Upload, X, FileUp, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, showError } from "@/lib/utils";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -89,10 +89,8 @@ export default function DragDropZone({ folderId, onUploadComplete }: Readonly<Dr
 
         completedFiles++;
         setTotalProgress((completedFiles / totalFiles) * 100);
-      } catch (error: any) {
-        toast.error("Upload failed", {
-          description: error.message ?? "Something went wrong.",
-        });
+      } catch (error: unknown) {
+        showError(error);
 
         // Set failed file progress to 0
         setUploadProgress((prev) => ({ ...prev, [file.name]: 0 }));

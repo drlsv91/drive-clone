@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Pencil, User } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { showError } from "@/lib/utils";
 
 interface ProfileSettingsProps {
   user: {
@@ -58,10 +59,8 @@ export default function ProfileSettings({ user }: Readonly<ProfileSettingsProps>
 
       setIsEditing(false);
       router.refresh();
-    } catch (error: any) {
-      toast.error("Update failed", {
-        description: error.message ?? "Something went wrong.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Update failed");
     } finally {
       setIsUpdating(false);
     }

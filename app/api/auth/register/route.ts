@@ -41,8 +41,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // Don't return the password in the response
-    const { password: _, ...userWithoutPassword } = user;
+    const { ...userWithoutPassword } = user;
 
     return NextResponse.json({ message: "User created successfully", user: userWithoutPassword }, { status: 201 });
   } catch (error) {

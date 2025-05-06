@@ -27,8 +27,8 @@ export const uploadToCloudinary = async (fileBuffer: Buffer, fileName: string, f
         .end(fileBuffer);
     });
 
-    return result as any;
-  } catch (error) {
+    return result;
+  } catch (error: unknown) {
     console.error("Error uploading to Cloudinary:", error);
     throw new Error("Failed to upload file");
   }

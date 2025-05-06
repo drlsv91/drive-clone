@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import axios from "axios";
 import ShareDialog from "./ShareDialog";
-import { formatDate } from "@/lib/utils";
+import { formatDate, showError } from "@/lib/utils";
 
 interface FolderProps {
   id: string;
@@ -55,10 +55,8 @@ export default function FolderCard({
 
       setIsRenaming(false);
       router.refresh();
-    } catch (error: any) {
-      toast.error("Rename failed", {
-        description: error.response?.data?.error ?? "Something went wrong.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Rename failed");
     }
   };
 
@@ -79,10 +77,8 @@ export default function FolderCard({
       }
 
       router.refresh();
-    } catch (error: any) {
-      toast.error("Delete failed", {
-        description: error.message ?? "Something went wrong.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Delete failed");
     } finally {
       setIsDeleting(false);
     }
@@ -99,10 +95,8 @@ export default function FolderCard({
       });
 
       router.refresh();
-    } catch (error: any) {
-      toast.error("Action failed", {
-        description: error.message ?? "Something went wrong.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Action failed");
     }
   };
 

@@ -19,6 +19,8 @@ import {
 import { HardDrive, Trash2, AlertTriangle, BarChart3, FileUp, Folder, Image, FileText, FileVideo } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { showError } from "@/lib/utils";
+import Link from "next/link";
 
 interface StorageSettingsProps {
   storageData: {
@@ -59,10 +61,8 @@ export default function StorageSettings({ storageData }: Readonly<StorageSetting
 
       setShowEmptyTrashDialog(false);
       router.refresh();
-    } catch (error: any) {
-      toast.error("Operation failed", {
-        description: error.response?.data?.error ?? "Failed to empty trash. Please try again.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Operation failed");
     } finally {
       setIsEmptyingTrash(false);
     }
@@ -80,10 +80,8 @@ export default function StorageSettings({ storageData }: Readonly<StorageSetting
       });
 
       router.refresh();
-    } catch (error) {
-      toast.error("Operation failed", {
-        description: "Failed to clear cache. Please try again.",
-      });
+    } catch (error: unknown) {
+      showError(error, "Operation failed");
     } finally {
       setIsClearingCache(false);
     }
@@ -148,10 +146,10 @@ export default function StorageSettings({ storageData }: Readonly<StorageSetting
         </CardContent>
         <CardFooter className="flex flex-col gap-4 sm:flex-row">
           <Button variant="outline" className="w-full sm:w-auto" asChild>
-            <a href="/dashboard/trash">
+            <Link href="/dashboard/trash">
               <Trash2 className="mr-2 h-4 w-4" />
               Manage Trash
-            </a>
+            </Link>
           </Button>
           <Button variant="outline" className="w-full sm:w-auto" onClick={() => setShowEmptyTrashDialog(true)}>
             <Trash2 className="mr-2 h-4 w-4" />

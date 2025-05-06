@@ -6,17 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { showError } from "@/lib/utils";
 import { RegisterUserDataForm, registerUserSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export default function SignUp() {
+function SignUpForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,10 +39,8 @@ export default function SignUp() {
       });
 
       router.push("/signin");
-    } catch (error: any) {
-      toast.error("Registration failed", {
-        description: error.message || "An unexpected error occurred. Please try again.",
-      });
+    } catch (error: unknown) {
+      showError(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -137,5 +136,13 @@ export default function SignUp() {
         </CardFooter>
       </Card>
     </div>
+  );
+}
+
+export default function SignUp() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center">Loading...</div>}>
+      <SignUpForm />
+    </Suspense>
   );
 }

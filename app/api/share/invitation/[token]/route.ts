@@ -4,9 +4,9 @@ import prisma from "@/lib/prisma";
 import authOptions from "@/auth/authOptions";
 import { shareFileInvitationSchema } from "@/lib/validators";
 
-export async function GET(request: NextRequest, { params }: { params: { token: string } }) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ token: string }> }) {
   try {
-    const token = params.token;
+    const { token } = await params;
 
     const { success, error } = shareFileInvitationSchema.safeParse({ token });
 
@@ -69,15 +69,14 @@ export async function GET(request: NextRequest, { params }: { params: { token: s
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { token: string } }) {
+export async function POST(_request: NextRequest, { params }: { params: Promise<{ token: string }> }) {
   try {
+    const { token } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    const token = params.token;
 
     const { success, error } = shareFileInvitationSchema.safeParse({ token });
 

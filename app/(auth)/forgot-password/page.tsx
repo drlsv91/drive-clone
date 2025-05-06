@@ -30,7 +30,7 @@ export default function ForgotPassword() {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">DriveClone</div>
           <CardTitle className="text-2xl font-bold">Reset Your Password</CardTitle>
-          <CardDescription>We'll send you a link to reset your password</CardDescription>
+          <CardDescription>We&apos;ll send you a link to reset your password</CardDescription>
         </CardHeader>
         <CardContent>
           {!isSubmitted ? (
@@ -65,7 +65,7 @@ export default function ForgotPassword() {
               </div>
               <h3 className="text-lg font-medium">Check your email</h3>
               <p className="text-gray-500 mt-2">
-                We've sent a password reset link to <span className="font-medium">{email}</span>
+                We&apos;ve sent a password reset link to <span className="font-medium">{email}</span>
               </p>
             </div>
           )}

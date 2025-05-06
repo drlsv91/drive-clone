@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import ErrorMessage from "@/components/ErrorMessage";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,17 +10,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { showError } from "@/lib/utils";
 import { CreateFolderDataForm, createFolderSchema } from "@/lib/validators";
-import { useForm } from "react-hook-form";
-import ErrorMessage from "@/components/ErrorMessage";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface CreateFolderDialogProps {
   open: boolean;
@@ -62,10 +62,8 @@ export default function CreateFolderDialog({
       }
 
       router.refresh();
-    } catch (error: any) {
-      toast.error("Creation failed", {
-        description: error.response?.data?.error ?? "Something went wrong.",
-      });
+    } catch (error: unknown) {
+      showError(error);
     } finally {
       setIsCreating(false);
     }

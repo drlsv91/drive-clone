@@ -94,11 +94,11 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     // Upload to Cloudinary
-    const uploadResult = await uploadToCloudinary(
+    const uploadResult = (await uploadToCloudinary(
       buffer,
       `${session.user.id}-${Date.now()}-${file.name}`,
       "drive-clone"
-    );
+    )) as { public_id: string; secure_url: string };
 
     // Generate thumbnail if applicable
     const thumbnailUrl =

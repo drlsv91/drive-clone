@@ -7,17 +7,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { showError } from "@/lib/utils";
 import { LoginUserDataForm, loginUserSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export default function SignIn() {
+function SignInForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -54,8 +55,8 @@ export default function SignIn() {
         router.push(callbackUrl);
         router.refresh();
       }
-    } catch (error) {
-      toast.error("An unexpected error occurred. Please try again.");
+    } catch (error: unknown) {
+      showError(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -125,7 +126,7 @@ export default function SignIn() {
         <CardFooter className="flex justify-center">
           <div className="text-center text-sm">
             <p className="text-gray-500 mb-2">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/signup" className="text-blue-600 hover:text-blue-800 font-medium">
                 Sign up
               </Link>
@@ -137,5 +138,13 @@ export default function SignIn() {
         </CardFooter>
       </Card>
     </div>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center">Loading...</div>}>
+      <SignInForm />
+    </Suspense>
   );
 }

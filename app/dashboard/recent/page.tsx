@@ -37,7 +37,9 @@ export default async function RecentPage() {
         {recentFiles.length === 0 ? (
           <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
             <h3 className="text-lg font-medium text-gray-900">No recent files</h3>
-            <p className="mt-1 text-sm text-gray-500">Files you've accessed in the last 30 days will appear here.</p>
+            <p className="mt-1 text-sm text-gray-500">
+              Files you&apos;ve accessed in the last 30 days will appear here.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
