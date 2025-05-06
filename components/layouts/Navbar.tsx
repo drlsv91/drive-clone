@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { HelpCircle, LogOut, Menu, Search, Settings, User } from "lucide-react";
+import { LogOut, Menu, Search, Settings, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -70,12 +70,10 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" aria-label="Help">
-            <HelpCircle className="h-5 w-5" />
-          </Button>
-
           <Button variant="ghost" size="icon" aria-label="Settings">
-            <Settings className="h-5 w-5" />
+            <Link href={`/dashboard/settings`}>
+              <Settings className="h-5 w-5" />
+            </Link>
           </Button>
 
           <DropdownMenu>
