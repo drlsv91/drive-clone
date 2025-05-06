@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 import {
   DropdownMenu,
@@ -180,7 +180,7 @@ export default function FileCard({
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
         <DialogContent className="sm:max-w-4xl">
           <div className="flex flex-col items-center justify-center gap-4">
-            <h2 className="text-xl font-bold">{name}</h2>
+            <DialogTitle className="text-xl font-bold">{name}</DialogTitle>
 
             <PreviewFile
               name={name}
