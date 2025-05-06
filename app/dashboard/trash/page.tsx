@@ -59,7 +59,7 @@ export default async function TrashPage() {
                       id={folder.id}
                       name={folder.name}
                       isRoot={folder.isRoot}
-                      createdAt={folder.createdAt}
+                      createdAt={folder.createdAt.toISOString()}
                     />
                   ))}
                 </div>

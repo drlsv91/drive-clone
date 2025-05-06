@@ -1,22 +1,17 @@
 import { Suspense } from "react";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import ActionButtons from "./components/ActionButtons";
-import FolderCard from "./components/FolderCard";
 import FileCard from "./components/FileCard";
-import authOptions from "../auth/authOptions";
+import FolderCard from "./components/FolderCard";
+
 import prisma from "@/lib/prisma";
+import { requireAuth } from "@/lib/server-auth";
 
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect("/signin");
-  }
+  const currentUser = await requireAuth();
 
   const rootFolder = await prisma.folder.findFirst({
     where: {
-      userId: session.user.id,
+      userId: currentUser.id,
       isRoot: true,
     },
   });
@@ -26,15 +21,16 @@ export default async function Dashboard() {
       data: {
         name: "Root",
         isRoot: true,
-        userId: session.user.id,
+        userId: currentUser.id,
       },
     });
   }
 
   const folders = await prisma.folder.findMany({
     where: {
-      userId: session.user.id,
+      userId: currentUser.id,
       parentId: null,
+      isTrash: false,
     },
     orderBy: {
       name: "asc",
@@ -43,8 +39,9 @@ export default async function Dashboard() {
 
   const files = await prisma.file.findMany({
     where: {
-      userId: session.user.id,
+      userId: currentUser.id,
       folderId: null,
+      isTrash: false,
     },
     orderBy: {
       name: "asc",
@@ -79,7 +76,7 @@ export default async function Dashboard() {
                       id={folder.id}
                       name={folder.name}
                       isRoot={folder.isRoot}
-                      createdAt={folder.createdAt}
+                      createdAt={folder.createdAt.toISOString()}
                     />
                   ))}
                 </div>
@@ -98,7 +95,7 @@ export default async function Dashboard() {
                       type={file.type}
                       size={file.size}
                       url={file.url}
-                      thumbnailUrl={file.thumbnailUrl || undefined}
+                      thumbnailUrl={file.thumbnailUrl ?? undefined}
                       createdAt={file.createdAt.toISOString()}
                     />
                   ))}
