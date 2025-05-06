@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
-import authOptions from "@/app/auth/authOptions";
+import authOptions from "@/auth/authOptions";
 import prisma from "@/lib/prisma";
 
 export async function DELETE(request: NextRequest) {
