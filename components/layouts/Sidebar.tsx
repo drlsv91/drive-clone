@@ -3,17 +3,40 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { formatBytes } from "@/lib/utils";
+import axios from "axios";
 import { Clock, CloudOff, HardDrive, Plus, Star, Trash, Users } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [usage] = useState({
+  const [usage, setUsage] = useState({
     used: 0,
     total: 100 * 1024 * 1024, // 100MB for demo
   });
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const fetchUsage = async () => {
+      if (session?.user?.id) {
+        try {
+          const response = await axios.get("/api/users/storage");
+
+          setUsage({
+            used: response.data.usedStorage,
+            total: 100 * 1024 * 1024, // 100MB limit
+          });
+        } catch (error) {
+          console.error("Error fetching storage usage:", error);
+        }
+      }
+    };
+
+    fetchUsage();
+  }, [session?.user?.id]);
 
   const usagePercentage = Math.min(Math.round((usage.used / usage.total) * 100), 100);
 
