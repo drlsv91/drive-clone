@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import BreadcrumbNav from "../components/BreadcrumbNav";
 import DragDropZone from "../components/DragDropZone";
-import { Metadata } from "next";
 
 export default function UploadPage() {
   const [uploading, setUploading] = useState(false);
@@ -100,8 +99,3 @@ export default function UploadPage() {
     </div>
   );
 }
-
-export const metadata: Metadata = {
-  title: "DriveClone -  Upload",
-  description: "drive clone upload file",
-};
