@@ -1,0 +1,28 @@
+import { z } from "zod";
+
+export const shareFileSchema = z
+  .object({
+    fileId: z.string().cuid("invalid file id").optional(),
+    folderId: z.string().cuid("invalid folder id").optional(),
+    sharedWithEmail: z.string().email(),
+    permission: z.enum(["view", "edit", "admin"], {
+      required_error: "Permission is required",
+      invalid_type_error: "Permission must be one of 'view', 'edit', or 'admin'",
+    }),
+  })
+  .refine((data) => !data.fileId && !data.folderId, {
+    message: "Either fileId or folderId must be provided.",
+    path: ["fileId"], //["folderId"]
+  });
+export const patchShareFileSchema = z
+  .object({
+    fileId: z.string().cuid("invalid file id").optional(),
+    folderId: z.string().cuid("invalid folder id").optional(),
+  })
+  .refine((data) => !data.fileId && !data.folderId, {
+    message: "Either fileId or folderId must be provided.",
+    path: ["fileId"], //["folderId"]
+  });
+
+export type ShareFileDataForm = z.infer<typeof shareFileSchema>;
+export type PatchShareFileDataForm = z.infer<typeof patchShareFileSchema>;
