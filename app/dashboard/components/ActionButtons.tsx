@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { Plus, Upload, FolderPlus, FileUp, Share } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,9 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { FileUp, FolderPlus, Plus, Upload } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import CreateFolderDialog from "./CreateFolderDialog";
 import FileUpload from "./FileUpload";
 
@@ -57,11 +57,6 @@ export default function ActionButtons({ folderId, onAction }: Readonly<ActionBut
           <Upload className="h-4 w-4 mr-2" />
           <span className="hidden sm:inline">Upload</span>
         </Button>
-
-        <Button variant="outline">
-          <Share className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">Share</span>
-        </Button>
       </div>
 
       <CreateFolderDialog
@@ -75,7 +70,7 @@ export default function ActionButtons({ folderId, onAction }: Readonly<ActionBut
 
       <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
         <DialogContent className="sm:max-w-md">
-          <h2 className="text-lg font-semibold mb-4">Upload a file</h2>
+          <DialogTitle className="text-lg font-semibold mb-4">Upload a file</DialogTitle>
           <FileUpload
             folderId={folderId}
             onUploadComplete={() => {
