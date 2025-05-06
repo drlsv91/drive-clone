@@ -11,14 +11,18 @@ export async function GET(request: NextRequest) {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const currentUser = session.user;
 
     const { searchParams } = new URL(request.url);
+
     const parentId = searchParams.get("parentId") ?? null;
+    const isTrash = searchParams.get("isTrash") === null ? undefined : searchParams.get("isTrash") === "true";
 
     const folders = await prisma.folder.findMany({
       where: {
-        userId: session.user.id,
+        userId: currentUser.id,
         parentId: parentId,
+        isTrash,
       },
       orderBy: {
         name: "asc",
