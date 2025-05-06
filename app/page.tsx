@@ -2,8 +2,17 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import HomeHeader from "./Header";
+import { getServerSession } from "next-auth";
+import authOptions from "../auth/authOptions";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       <HomeHeader />
