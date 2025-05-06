@@ -19,7 +19,6 @@ const authOptions: NextAuthOptions = {
         },
       },
     }),
-
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -38,7 +37,6 @@ const authOptions: NextAuthOptions = {
           },
         });
 
-        // If user doesn't exist or doesn't have a password (e.g., OAuth-only users)
         if (!user || !user.password) {
           return null;
         }
@@ -73,46 +71,8 @@ const authOptions: NextAuthOptions = {
     },
     async signIn({ user, account, profile }) {
       try {
-        if (!user?.id) {
-          console.error("No user ID found during sign in");
-          return false;
-        }
-
         if (account?.provider === "google") {
-          const existingUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            select: { id: true },
-          });
-
-          if (existingUser) {
-            // Check if root folder exists
-            const rootFolder = await prisma.folder.findFirst({
-              where: {
-                userId: user.id,
-                isRoot: true,
-              },
-            });
-
-            // Create root folder if it doesn't exist
-            if (!rootFolder) {
-              await prisma.folder.create({
-                data: {
-                  name: "Root",
-                  isRoot: true,
-                  userId: user.id,
-                },
-              });
-              console.log(`Created root folder for user ${user.id}`);
-              return true;
-            }
-
-            // User exists and has a root folder
-            return true;
-          } else {
-            // This should rarely happen as the adapter should create the user
-            console.error(`User ${user.id} not found in database during OAuth sign in`);
-            return false;
-          }
+          return true; // Let the OAuth flow complete first
         }
 
         // For credential provider
@@ -135,21 +95,67 @@ const authOptions: NextAuthOptions = {
             });
             console.log(`Created root folder for credentials user ${user.id}`);
           }
-
-          return true;
         }
 
         return true;
       } catch (error) {
         console.error("Error in signIn callback:", error);
-
         return false;
+      }
+    },
+  },
+  events: {
+    // Create root folder after a user is created
+    async createUser(message) {
+      try {
+        const { user } = message;
+        console.log(`Creating root folder for new user ${user.id}`);
+
+        await prisma.folder.create({
+          data: {
+            name: "Root",
+            isRoot: true,
+            userId: user.id,
+          },
+        });
+      } catch (error) {
+        console.error("Error creating root folder for new user:", error);
+      }
+    },
+
+    async signIn(message) {
+      try {
+        const { user, account } = message;
+
+        if (account?.provider === "google") {
+          const rootFolder = await prisma.folder.findFirst({
+            where: {
+              userId: user.id,
+              isRoot: true,
+            },
+          });
+
+          if (!rootFolder) {
+            await prisma.folder.create({
+              data: {
+                name: "Root",
+                isRoot: true,
+                userId: user.id,
+              },
+            });
+            console.log(`Created root folder for user ${user.id} during sign-in event`);
+          }
+        }
+      } catch (error) {
+        console.error("Error in signIn event handler:", error);
       }
     },
   },
   pages: {
     signIn: "/signin",
+    error: "/auth/error",
   },
+  debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",
   },
