@@ -8,6 +8,7 @@ import FileGrid from "../components/FileGrid";
 import { Star } from "lucide-react";
 import authOptions from "@/auth/authOptions";
 import prisma from "@/lib/prisma";
+import { Metadata } from "next";
 
 export default async function StarredPage() {
   const session = await getServerSession(authOptions);
@@ -100,3 +101,8 @@ export default async function StarredPage() {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "DriveClone -  Starred List",
+  description: "drive clone view starred files",
+};

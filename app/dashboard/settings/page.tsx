@@ -9,6 +9,7 @@ import NotificationSettings from "./components/NotificationSettings";
 import ProfileSettings from "./components/ProfileSettings";
 import SecuritySettings from "./components/SecuritySettings";
 import StorageSettings from "./components/StorageSettings";
+import { Metadata } from "next";
 
 export default async function SettingsPage() {
   const currentUser = await requireAuth();
@@ -92,3 +93,8 @@ export default async function SettingsPage() {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "DriveClone -  Settings",
+  description: "drive clone view settings",
+};

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import FileGrid from "../components/FileGrid";
 import FolderCard from "../components/FolderCard";
 import TrashHeader from "./TrashHeader";
+import { Metadata } from "next";
 
 export default async function TrashPage() {
   const currentUser = await requireAuth();
@@ -88,3 +89,8 @@ export default async function TrashPage() {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "DriveClone -  Trash List",
+  description: "drive clone view trash files",
+};

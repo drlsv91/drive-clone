@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/server-auth";
 import { Suspense } from "react";
 import BreadcrumbNav from "../components/BreadcrumbNav";
 import FileCard from "../components/FileCard";
+import { Metadata } from "next";
 
 export default async function RecentPage() {
   const currentUser = await requireAuth();
@@ -58,3 +59,8 @@ export default async function RecentPage() {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "DriveClone -  Recent Items",
+  description: "drive clone view recents items",
+};

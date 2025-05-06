@@ -4,6 +4,7 @@ import FileCard from "./components/FileCard";
 import FolderCard from "./components/FolderCard";
 import prisma from "@/lib/prisma";
 import { requireAuth } from "@/lib/server-auth";
+import { Metadata } from "next";
 
 export default async function Dashboard() {
   const currentUser = await requireAuth();
@@ -109,3 +110,8 @@ export default async function Dashboard() {
 }
 
 export const dynamic = "force-dynamic"; //opt-out of static rendering
+
+export const metadata: Metadata = {
+  title: "DriveClone - Dashboard",
+  description: "drive clone dashboard",
+};

@@ -5,6 +5,7 @@ import FileGrid from "../components/FileGrid";
 import FolderCard from "../components/FolderCard";
 import prisma from "@/lib/prisma";
 import { requireAuth } from "@/lib/server-auth";
+import { Metadata } from "next";
 
 export default async function SharedPage() {
   const currentUser = await requireAuth();
@@ -92,3 +93,8 @@ export default async function SharedPage() {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "DriveClone -  Sharred List",
+  description: "drive clone view shared items",
+};
