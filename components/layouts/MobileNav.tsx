@@ -17,7 +17,7 @@ const MobileNav = ({ onClose }: { onClose: () => void }) => {
 
   useEffect(() => {
     fetchUsage();
-  }, []);
+  }, [fetchUsage]);
   return (
     <div className="flex flex-col flex-1 p-4 space-y-6">
       <div className="space-y-2">
