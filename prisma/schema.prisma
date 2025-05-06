@@ -55,6 +55,9 @@ model User {
   usedStorage   Int       @default(0) // Used storage in bytes
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  sharedByMe   SharedItem[] @relation("SharedByUser")
+  sharedWithMe SharedItem[] @relation("SharedWithUser")
 }
 
 model VerificationToken {
@@ -80,6 +83,8 @@ model Folder {
   isStarred Boolean  @default(false)
   isTrash   Boolean  @default(false)
 
+  sharedWith SharedItem[]
+
   @@unique([name, parentId, userId])
   @@index([userId])
   @@index([parentId])
@@ -103,19 +108,30 @@ model File {
   isTrash      Boolean  @default(false)
   viewedAt     DateTime @default(now()) // Track when the file was last viewed for "Recent" feature
 
+  sharedWith SharedItem[]
+
   @@index([userId])
   @@index([folderId])
 }
 
 model SharedItem {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   fileId          String?
   folderId        String?
   sharedByUserId  String
   sharedWithEmail String
   permission      String // "view", "edit", etc.
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  created         Boolean   @default(false) // If the share invitation has been accepted
+  token           String?   @unique // For invitation link
+  expiresAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  file           File?   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  folder         Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  sharedByUser   User    @relation("SharedByUser", fields: [sharedByUserId], references: [id], onDelete: Cascade)
+  sharedWithUser User?   @relation("SharedWithUser", fields: [sharedWithEmail], references: [email])
 
   @@index([fileId])
   @@index([folderId])
