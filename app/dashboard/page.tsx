@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import ActionButtons from "./components/ActionButtons";
 import FileCard from "./components/FileCard";
 import FolderCard from "./components/FolderCard";
-
 import prisma from "@/lib/prisma";
 import { requireAuth } from "@/lib/server-auth";
 
@@ -108,3 +107,5 @@ export default async function Dashboard() {
     </div>
   );
 }
+
+export const dynamic = "force-dynamic"; //opt-out of static rendering
