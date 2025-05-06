@@ -56,8 +56,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  sharedByMe   SharedItem[] @relation("SharedByUser")
-  sharedWithMe SharedItem[] @relation("SharedWithUser")
+  sharedByMe SharedItem[] @relation("SharedByUser")
 }
 
 model VerificationToken {
@@ -128,10 +127,9 @@ model SharedItem {
   updatedAt       DateTime  @updatedAt
 
   // Relations
-  file           File?   @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  folder         Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
-  sharedByUser   User    @relation("SharedByUser", fields: [sharedByUserId], references: [id], onDelete: Cascade)
-  sharedWithUser User?   @relation("SharedWithUser", fields: [sharedWithEmail], references: [email])
+  file         File?   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  folder       Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  sharedByUser User    @relation("SharedByUser", fields: [sharedByUserId], references: [id], onDelete: Cascade)
 
   @@index([fileId])
   @@index([folderId])

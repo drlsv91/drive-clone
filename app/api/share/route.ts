@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-
-import { v4 as uuidv4 } from "uuid";
+import { NextRequest, NextResponse } from "next/server";
 import authOptions from "@/auth/authOptions";
-import { patchShareFileSchema, shareFileSchema } from "@/lib/validators";
 import prisma from "@/lib/prisma";
+import { patchShareFileSchema, shareFileSchema } from "@/lib/validators";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,10 +15,10 @@ export async function POST(request: NextRequest) {
 
     const currentUser = session.user;
     const body = await request.json();
+
     const { success, error } = shareFileSchema.safeParse(body);
     const { fileId, folderId, sharedWithEmail, permission } = body;
 
-    // Validate input
     if (!success) {
       return NextResponse.json(error.format(), { status: 400 });
     }
@@ -111,6 +110,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const fileId = searchParams.get("fileId");
     const folderId = searchParams.get("folderId");
+
     const { success, error } = patchShareFileSchema.safeParse({ fileId, folderId });
 
     if (!success) {

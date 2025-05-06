@@ -10,19 +10,24 @@ export const shareFileSchema = z
       invalid_type_error: "Permission must be one of 'view', 'edit', or 'admin'",
     }),
   })
-  .refine((data) => !data.fileId && !data.folderId, {
+  .refine((data) => data.fileId || data.folderId, {
     message: "Either fileId or folderId must be provided.",
     path: ["fileId"], //["folderId"]
   });
 export const patchShareFileSchema = z
   .object({
-    fileId: z.string().cuid("invalid file id").optional(),
-    folderId: z.string().cuid("invalid folder id").optional(),
+    fileId: z.string().cuid("invalid file id").optional().nullable(),
+    folderId: z.string().cuid("invalid folder id").optional().nullable(),
   })
-  .refine((data) => !data.fileId && !data.folderId, {
-    message: "Either fileId or folderId must be provided.",
-    path: ["fileId"], //["folderId"]
-  });
+  .refine(
+    (data) => {
+      return data.fileId || data.folderId;
+    },
+    {
+      message: "Either fileId or folderId must be provided.",
+      path: ["fileId"], //["folderId"]
+    }
+  );
 export const shareFileInvitationSchema = z.object({
   token: z.string().uuid("invalid file id"),
 });

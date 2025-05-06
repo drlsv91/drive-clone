@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import authOptions from "@/auth/authOptions";
 import prisma from "@/lib/prisma";
-import { Permission } from "@/types/enum";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -14,6 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const currentUser = session.user;
+
     const share = await prisma.sharedItem.findUnique({
       where: {
         id,
@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const { permission } = await request.json();
 
-    if (!permission || !Object.keys(Permission).includes(permission)) {
+    if (!permission || !["view", "edit", "admin"].includes(permission)) {
       return NextResponse.json({ error: "Valid permission is required" }, { status: 400 });
     }
 
