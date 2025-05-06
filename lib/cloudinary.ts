@@ -14,7 +14,6 @@ export const uploadToCloudinary = async (fileBuffer: Buffer, fileName: string, f
           {
             resource_type: "auto",
             public_id: `${folder}/${fileName}`,
-            format: "auto",
             transformation: [{ quality: "auto" }],
           },
           (error, result) => {

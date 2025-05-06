@@ -1,4 +1,4 @@
-import authOptions from "@/app/auth/authOptions";
+import authOptions from "@/auth/authOptions";
 import { generateThumbnail, uploadToCloudinary } from "@/lib/cloudinary";
 import prisma from "@/lib/prisma";
 import { fileFilterSchema } from "@/lib/validators";

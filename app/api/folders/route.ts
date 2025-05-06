@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import authOptions from "@/app/auth/authOptions";
+import authOptions from "@/auth/authOptions";
 import prisma from "@/lib/prisma";
 import { createFolderSchema } from "@/lib/validators";
 
