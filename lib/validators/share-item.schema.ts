@@ -23,6 +23,9 @@ export const patchShareFileSchema = z
     message: "Either fileId or folderId must be provided.",
     path: ["fileId"], //["folderId"]
   });
+export const shareFileInvitationSchema = z.object({
+  token: z.string().uuid("invalid file id"),
+});
 
 export type ShareFileDataForm = z.infer<typeof shareFileSchema>;
 export type PatchShareFileDataForm = z.infer<typeof patchShareFileSchema>;
