@@ -2,6 +2,8 @@ import prisma from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { compare } from "bcryptjs";
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -9,6 +11,44 @@ const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        // Find user by email
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
+
+        // If user doesn't exist or doesn't have a password (e.g., OAuth-only users)
+        if (!user || !user.password) {
+          return null;
+        }
+
+        const passwordMatch = await compare(credentials.password, user.password);
+
+        if (!passwordMatch) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+        };
+      },
     }),
   ],
   callbacks: {
@@ -25,9 +65,7 @@ const authOptions: NextAuthOptions = {
       return token;
     },
     async signIn({ user, account, profile }) {
-      console.log("signIn => ", user);
       try {
-        // Make sure we have a valid user ID before proceeding
         if (!user?.id) {
           console.error("No user ID found during sign in");
           return false;
