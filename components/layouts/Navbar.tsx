@@ -9,16 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { LogOut, Menu, Search, Settings, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import MobileNav from "./MobileNav";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchActive, setIsSearchActive] = useState(false);
+
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,18 +33,21 @@ export default function Navbar() {
     <nav className="w-full h-16 bg-white border-b border-gray-200 fixed top-0 left-0 z-30">
       <div className="flex items-center justify-between h-full px-4">
         <div className="flex items-center gap-2">
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="icon">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64">
-              <div className="flex flex-col h-full">
-                <div className="flex items-center gap-2 py-4">
+              <SheetHeader className="flex flex-col lg:h-full p-4 lg:p-0">
+                <SheetTitle className="flex items-center gap-2 py-4">
                   <span className="font-semibold text-lg">DriveClone</span>
-                </div>
-              </div>
+                </SheetTitle>
+              </SheetHeader>
+              {/* MOBILE VIEW */}
+
+              <MobileNav onClose={() => setIsSheetOpen(false)} />
             </SheetContent>
           </Sheet>
 
