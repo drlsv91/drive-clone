@@ -21,7 +21,7 @@ export default function Sidebar() {
 
   useEffect(() => {
     fetchUsage();
-  }, [session?.user?.id, fetchUsage]);
+  }, [session?.user?.id]);
 
   return (
     <aside className="hidden lg:flex flex-col w-64 h-screen pt-16 fixed left-0 top-0 bg-white border-r border-gray-200">
