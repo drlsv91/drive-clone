@@ -53,7 +53,7 @@ export default function ActionButtons({ folderId, onAction }: Readonly<ActionBut
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button variant="outline" onClick={() => setIsUploadDialogOpen(true)}>
+        <Button className="cursor-pointer" variant="outline" onClick={() => setIsUploadDialogOpen(true)}>
           <Upload className="h-4 w-4 mr-2" />
           <span className="hidden sm:inline">Upload</span>
         </Button>
