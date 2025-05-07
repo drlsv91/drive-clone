@@ -40,7 +40,12 @@ export default async function Home() {
               </div>
 
               <div className="relative h-[400px] rounded-xl overflow-hidden shadow-2xl">
-                <Image src="/dashboard-preview.png" alt="DriveClone Dashboard Preview" fill className="object-cover" />
+                <Image
+                  src="/dashboard-preview.png"
+                  alt="DriveClone Dashboard Preview"
+                  fill
+                  className="object-contain"
+                />
               </div>
             </div>
           </div>
