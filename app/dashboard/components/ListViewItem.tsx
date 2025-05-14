@@ -29,7 +29,7 @@ import {
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
-import { useFiles } from "@/hooks/use-files-query";
+import { useFiles } from "@/hooks/useFiles";
 import Image from "next/image";
 import { IoCloseOutline } from "react-icons/io5";
 

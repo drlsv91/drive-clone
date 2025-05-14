@@ -31,7 +31,7 @@ import { useCallback, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 
 import { Input } from "@/components/ui/input";
-import { useFiles } from "@/hooks/use-files-query";
+import { useFiles } from "@/hooks/useFiles";
 
 type FileProps = {
   id: string;
