@@ -49,36 +49,6 @@ export function getFileTypeIcon(type: string) {
   }
 }
 
-export function getFileExtension(mimeType: string): string {
-  const mimeTypeToExtension: Record<string, string> = {
-    "image/jpeg": ".jpg",
-    "image/png": ".png",
-    "image/gif": ".gif",
-    "image/webp": ".webp",
-    "image/svg+xml": ".svg",
-    "application/pdf": ".pdf",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
-    "application/msword": ".doc",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ".xlsx",
-    "application/vnd.ms-excel": ".xls",
-    "text/csv": ".csv",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation": ".pptx",
-    "application/vnd.ms-powerpoint": ".ppt",
-    "application/zip": ".zip",
-    "application/x-zip-compressed": ".zip",
-    "application/x-rar-compressed": ".rar",
-    "application/gzip": ".gz",
-    "text/plain": ".txt",
-    "video/mp4": ".mp4",
-    "video/webm": ".webm",
-    "audio/mpeg": ".mp3",
-    "audio/wav": ".wav",
-    "audio/ogg": ".ogg",
-  };
-
-  return mimeTypeToExtension[mimeType] || "";
-}
-
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("en-US", {
@@ -87,14 +57,6 @@ export const formatDate = (dateString: string) => {
     day: "2-digit",
   }).format(date);
 };
-
-export function sanitizeFilename(filename: string): string {
-  return filename
-    .replace(/[<>:"\/\\|?*\x00-\x1F]/g, "_")
-    .replace(/\.\./g, "_") // Prevent directory traversal
-    .replace(/\s+/g, "_") // Replace spaces with underscores
-    .trim();
-}
 
 interface ApiError {
   message?: string;
