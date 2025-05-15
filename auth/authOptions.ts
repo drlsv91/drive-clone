@@ -69,40 +69,6 @@ const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async signIn({ user, account, profile }) {
-      try {
-        if (account?.provider === "google") {
-          return true; // Let the OAuth flow complete first
-        }
-
-        // For credential provider
-        if (account?.provider === "credentials") {
-          // User should already exist, check for root folder
-          const rootFolder = await prisma.folder.findFirst({
-            where: {
-              userId: user.id,
-              isRoot: true,
-            },
-          });
-
-          if (!rootFolder) {
-            await prisma.folder.create({
-              data: {
-                name: "Root",
-                isRoot: true,
-                userId: user.id,
-              },
-            });
-            console.log(`Created root folder for credentials user ${user.id}`);
-          }
-        }
-
-        return true;
-      } catch (error) {
-        console.error("Error in signIn callback:", error);
-        return false;
-      }
-    },
   },
   events: {
     // Create root folder after a user is created
