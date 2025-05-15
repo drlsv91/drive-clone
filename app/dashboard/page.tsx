@@ -85,22 +85,19 @@ export default async function Dashboard() {
 
             {files.length > 0 && (
               <div>
-                <h2 className="text-lg font-medium mb-4">Files</h2>
-                <div>
-                  {
-                    <FileGrid
-                      files={files.map((file) => ({
-                        id: file.id,
-                        name: file.name,
-                        type: file.type,
-                        size: file.size,
-                        url: file.url,
-                        thumbnailUrl: file.thumbnailUrl ?? undefined,
-                        createdAt: file.createdAt.toISOString(),
-                      }))}
-                    />
-                  }
-                </div>
+                {
+                  <FileGrid
+                    files={files.map((file) => ({
+                      id: file.id,
+                      name: file.name,
+                      type: file.type,
+                      size: file.size,
+                      url: file.url,
+                      thumbnailUrl: file.thumbnailUrl ?? undefined,
+                      createdAt: file.createdAt.toISOString(),
+                    }))}
+                  />
+                }
               </div>
             )}
           </>
