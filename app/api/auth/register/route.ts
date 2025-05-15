@@ -32,15 +32,6 @@ export async function POST(request: Request) {
       },
     });
 
-    // Create root folder for the user
-    await prisma.folder.create({
-      data: {
-        name: "Root",
-        isRoot: true,
-        userId: user.id,
-      },
-    });
-
     const { ...userWithoutPassword } = user;
 
     return NextResponse.json({ message: "User created successfully", user: userWithoutPassword }, { status: 201 });
