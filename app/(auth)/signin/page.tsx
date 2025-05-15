@@ -39,7 +39,6 @@ function SignInForm() {
 
     try {
       const result = await signIn("credentials", {
-        redirect: false,
         email: data.email,
         password: data.password,
         callbackUrl,
