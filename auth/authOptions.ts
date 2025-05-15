@@ -88,34 +88,6 @@ const authOptions: NextAuthOptions = {
         console.error("Error creating root folder for new user:", error);
       }
     },
-
-    async signIn(message) {
-      try {
-        const { user, account } = message;
-
-        if (account?.provider === "google") {
-          const rootFolder = await prisma.folder.findFirst({
-            where: {
-              userId: user.id,
-              isRoot: true,
-            },
-          });
-
-          if (!rootFolder) {
-            await prisma.folder.create({
-              data: {
-                name: "Root",
-                isRoot: true,
-                userId: user.id,
-              },
-            });
-            console.log(`Created root folder for user ${user.id} during sign-in event`);
-          }
-        }
-      } catch (error) {
-        console.error("Error in signIn event handler:", error);
-      }
-    },
   },
   pages: {
     signIn: "/signin",
