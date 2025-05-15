@@ -1,15 +1,14 @@
-"use client";
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import HomeHeader from "../Header";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import authOptions from "@/auth/authOptions";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-const AuthLayout = ({ children }: PropsWithChildren) => {
-  const { status } = useSession();
-  const router = useRouter();
+const AuthLayout = async ({ children }: PropsWithChildren) => {
+  const session = await getServerSession(authOptions);
 
-  if (status === "authenticated") {
-    router.push("/dashboard");
+  if (session) {
+    redirect("/dashboard");
   }
 
   return (
